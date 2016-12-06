@@ -55,11 +55,7 @@ func GetAgents(c *gin.Context) {
 	verbose := true
 	query := "SELECT * FROM agent"
 
-	// Parse query string
-	q := c.Request.URL.Query()
-	query = query + ParseQuery(q)
 	if verbose == true {
-		fmt.Println(q)
 		fmt.Println("query: " + query)
 	}
 

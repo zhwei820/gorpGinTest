@@ -31,7 +31,6 @@ func InitDb(dbName string) *gorp.DbMap {
 
 	db, err := sql.Open("mysql", "root:spwx@/todolist")
 	checkErr(err, "sql.Open failed")
-	//dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	// XXX fix tables names
 	dbmap.AddTableWithName(Agent{}, "agent").SetKeys(true, "Id")
