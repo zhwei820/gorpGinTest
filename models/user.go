@@ -56,7 +56,10 @@ func GetUsers(c *gin.Context) {
 	verbose := true
 	query := "SELECT * FROM user"
 
+	q := c.Request.URL.Query()
+	// query = query + ParseQuery(q)
 	if verbose == true {
+		fmt.Println(q["a"][0])
 		fmt.Println("query: " + query)
 	}
 
