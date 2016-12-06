@@ -79,7 +79,7 @@ func TestUser(t *testing.T) {
 	assert.Equal(t, 2, len(as), "2 results")
 
 	log.Println("= Test parsing query")
-	s := "http://127.0.0.1:8080/api?_filters={\"name\":\"t\"}&_sortDir=ASC&_sortField=created"
+	s := "http://127.0.0.1:8084/api?_filters={\"name\":\"t\"}&_sortDir=ASC&_sortField=created"
 	u, _ := url.Parse(s)
 	q, _ := url.ParseQuery(u.RawQuery)
 	//fmt.Println(q)
@@ -88,7 +88,7 @@ func TestUser(t *testing.T) {
 	assert.Equal(t, "  WHERE name LIKE \"%t%\" ORDER BY datetime(created) ASC", query, "Parse query")
 
 	log.Println("= Test parsing page query")
-	s = "http://127.0.0.1:8080/api?_perPage=5&_page=1"
+	s = "http://127.0.0.1:8084/api?_perPage=5&_page=1"
 	u, _ = url.Parse(s)
 	q, _ = url.ParseQuery(u.RawQuery)
 	//fmt.Println(q)
@@ -97,7 +97,7 @@ func TestUser(t *testing.T) {
 	assert.Equal(t, "  LIMIT 5", query, "Parse query")
 
 	log.Println("= Test parsing page query")
-	s = "http://127.0.0.1:8080/api?_perPage=5&_page=2"
+	s = "http://127.0.0.1:8084/api?_perPage=5&_page=2"
 	u, _ = url.Parse(s)
 	q, _ = url.ParseQuery(u.RawQuery)
 	//fmt.Println(q)
@@ -106,7 +106,7 @@ func TestUser(t *testing.T) {
 	assert.Equal(t, "  LIMIT 5 OFFSET 6", query, "Parse query")
 
 	log.Println("= Test parsing multi filter query")
-	s = "http://127.0.0.1:8080/api?_filters={\"line\":\"t\",\"line2\":\"t2\"}&_sortDir=DESC&_sortField=created"
+	s = "http://127.0.0.1:8084/api?_filters={\"line\":\"t\",\"line2\":\"t2\"}&_sortDir=DESC&_sortField=created"
 	u, _ = url.Parse(s)
 	q, _ = url.ParseQuery(u.RawQuery)
 	//fmt.Println(q)

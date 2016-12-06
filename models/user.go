@@ -23,28 +23,28 @@ or remove sqlite tricks
 // XXX custom struct name and fields
 // User db and json type
 type User struct {
-	Id      int64     `db:"id" json:"id"`
-	Name    string    `db:"name" json:"name"`
-	Email   string    `db:"email" json:"mail"`
-	Status  string    `db:"status" json:"status"`
-	Comment string    `db:"comment, size:16384" json:"comment"`
-	Pass    string    `db:"pass" json:"pass"`
-	Created time.Time `db:"created" json:"created"` // or int64
-	Updated time.Time `db:"updated" json:"updated"`
+	Id      int64  `db:"id" json:"id"`
+	Name    string `db:"name" json:"name"`
+	Email   string `db:"email" json:"mail"`
+	Status  string `db:"status" json:"status"`
+	Comment string `db:"comment, size:16384" json:"comment"`
+	Pass    string `db:"pass" json:"pass"`
+	Created string `db:"created" json:"created"` // or int64
+	Updated string `db:"updated" json:"updated"`
 }
 
 // Hooks : PreInsert and PreUpdate
 
 // PreInsert set created an updated time before insert in db
 func (a *User) PreInsert(s gorp.SqlExecutor) error {
-	a.Created = time.Now() // or time.Now().UnixNano()
+	a.Created = time.Now().Format("2006-01-02 15:04:05") // or time.Now().UnixNano()
 	a.Updated = a.Created
 	return nil
 }
 
 // PreUpdate set updated time before insert in db
 func (a *User) PreUpdate(s gorp.SqlExecutor) error {
-	a.Updated = time.Now()
+	a.Updated = time.Now().Format("2006-01-02 15:04:05")
 	return nil
 }
 
@@ -74,7 +74,7 @@ func GetUsers(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "no user(s) into the table"})
 	}
 
-	// curl -i http://localhost:8080/api/v1/users
+	// curl -i http://localhost:8084/api/v1/users
 }
 
 // GetUser return one user by id
@@ -91,7 +91,7 @@ func GetUser(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "user not found"})
 	}
 
-	// curl -i http://localhost:8080/api/v1/users/1
+	// curl -i http://localhost:8084/api/v1/users/1
 }
 
 // PostUser create and return one user
@@ -128,7 +128,7 @@ func PostUser(c *gin.Context) {
 	// 	Created time.Time `db:"created" json:"created"` // or int64
 	// 	Updated time.Time `db:"updated" json:"updated"`
 	// }
-	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"name\": \"Thea\", \"comment\": \"Queen\" }" http://localhost:8080/api/v1/users
+	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"name\": \"Thea\", \"comment\": \"Queen\" }" http://localhost:8084/api/v1/users
 }
 
 // UpdateUser update one user by id
@@ -177,7 +177,7 @@ func UpdateUser(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "user not found"})
 	}
 
-	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"firstname\": \"Thea\", \"lastname\": \"Merlyn\" }" http://localhost:8080/api/v1/users/1
+	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"firstname\": \"Thea\", \"lastname\": \"Merlyn\" }" http://localhost:8084/api/v1/users/1
 }
 
 // DeleteUser delete one user by id
@@ -201,5 +201,5 @@ func DeleteUser(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "user not found"})
 	}
 
-	// curl -i -X DELETE http://localhost:8080/api/v1/users/1
+	// curl -i -X DELETE http://localhost:8084/api/v1/users/1
 }

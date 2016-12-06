@@ -73,7 +73,7 @@ func GetAgents(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "no agent(s) into the table"})
 	}
 
-	// curl -i http://localhost:8080/api/v1/agents
+	// curl -i http://localhost:8084/api/v1/agents
 }
 
 // GetAgent return one agent by id
@@ -90,7 +90,7 @@ func GetAgent(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "agent not found"})
 	}
 
-	// curl -i http://localhost:8080/api/v1/agents/1
+	// curl -i http://localhost:8084/api/v1/agents/1
 }
 
 // PostAgent create and return agent
@@ -117,7 +117,7 @@ func PostAgent(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Mandatory fields are empty"})
 	}
 
-	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"firstname\": \"Thea\", \"lastname\": \"Queen\" }" http://localhost:8080/api/v1/agents
+	// curl -i -X POST -H "Content-Type: application/json" -d "{ \"firstname\": \"Thea\", \"lastname\": \"Queen\" }" http://localhost:8084/api/v1/agents
 }
 
 // UpdateAgent by id
@@ -164,7 +164,7 @@ func UpdateAgent(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "agent not found"})
 	}
 
-	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"firstname\": \"Thea\", \"lastname\": \"Merlyn\" }" http://localhost:8080/api/v1/agents/1
+	// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"firstname\": \"Thea\", \"lastname\": \"Merlyn\" }" http://localhost:8084/api/v1/agents/1
 }
 
 // DeleteAgent by id
@@ -188,5 +188,5 @@ func DeleteAgent(c *gin.Context) {
 		c.JSON(404, gin.H{"error": "agent not found"})
 	}
 
-	// curl -i -X DELETE http://localhost:8080/api/v1/agents/1
+	// curl -i -X DELETE http://localhost:8084/api/v1/agents/1
 }

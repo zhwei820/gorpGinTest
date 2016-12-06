@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gintest/models"
+	"gorpGinTest/models"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,5 +21,5 @@ func main() {
 		// v1.OPTIONS("/users", Options)     // POST
 		// v1.OPTIONS("/users/:id", Options) // PUT, DELETE
 	}
-	r.Run(":8080")
+	r.Run(":8084")
 }
