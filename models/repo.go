@@ -51,7 +51,7 @@ func InitDb(dbName string) *gorp.DbMap {
 
 func InitRedisPool(url string, password string, maxConnections int) *redis.Pool {
 	redisPool := redis.NewPool(func() (redis.Conn, error) {
-		c, err := redis.Dial("tcp", url)
+		c, err := redis.DialURL("redis://localhost:6379/1")
 		if err != nil {
 			return nil, err
 		}

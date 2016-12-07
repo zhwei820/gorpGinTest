@@ -10,7 +10,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(models.Database("root:spwx@/todolist"))
-	r.Use(models.RedisPool("localhost:6379/1", "", 10))
+	r.Use(models.RedisPool("redis/localhost:6379/1", "", 10))
 
 	v1 := r.Group("api/v1")
 	{
