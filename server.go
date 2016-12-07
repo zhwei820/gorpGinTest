@@ -9,7 +9,8 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.Use(models.Database("test.sqlite3"))
+	r.Use(models.Database("root:spwx@/todolist"))
+	r.Use(models.RedisPool("localhost:6379", "", 10))
 
 	v1 := r.Group("api/v1")
 	{

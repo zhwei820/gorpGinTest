@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 
@@ -24,12 +25,19 @@ func Database(connString string) gin.HandlerFunc {
 	}
 }
 
+// Database gin Middlware to select database
+func RedisPool(url string, password string, maxConnections int) gin.HandlerFunc {
+	pool := InitRedisPool(url, password, maxConnections)
+	return func(c *gin.Context) {
+		c.Set("Pool", pool)
+		c.Next()
+	}
+}
+
 // InitDb set or create db
 func InitDb(dbName string) *gorp.DbMap {
-	// XXX fix database type
-	// db, err := sql.Open("sqlite3", dbName)
 
-	db, err := sql.Open("mysql", "root:spwx@/todolist")
+	db, err := sql.Open("mysql", dbName)
 	checkErr(err, "sql.Open failed")
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	// XXX fix tables names
@@ -39,6 +47,20 @@ func InitDb(dbName string) *gorp.DbMap {
 	checkErr(err, "Create tables failed")
 
 	return dbmap
+}
+
+func InitRedisPool(url string, password string, maxConnections int) *redis.Pool {
+	redisPool := redis.NewPool(func() (redis.Conn, error) {
+		c, err := redis.Dial("tcp", url)
+		if err != nil {
+			return nil, err
+		}
+		if password != "" {
+			c.Do("AUTH", password)
+		}
+		return c, err
+	}, maxConnections)
+	return redisPool
 }
 
 // ParseQuery parse query to set select SQL query

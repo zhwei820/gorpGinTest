@@ -2,11 +2,13 @@ package models
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
 	"gopkg.in/gorp.v1"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 )
 
@@ -53,6 +55,20 @@ func (a *User) PreUpdate(s gorp.SqlExecutor) error {
 // GetUsers return all users filtered by URL query
 func GetUsers(c *gin.Context) {
 	dbmap := c.Keys["DBmap"].(*gorp.DbMap)
+	pool := c.Keys["Pool"].(*redis.Pool)
+	fmt.Println(pool)
+
+	con := pool.Get()
+	defer con.Close()
+
+	key := "user1"
+	user, err1 := redis.String(con.Do("GET", key))
+	if err1 != nil {
+		log.Println("user check err1or", err1)
+
+	}
+	fmt.Println(user)
+
 	verbose := true
 	query := "SELECT * FROM user"
 
