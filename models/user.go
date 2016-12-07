@@ -65,7 +65,6 @@ func GetUsers(c *gin.Context) {
 	user, err1 := redis.String(con.Do("GET", key))
 	if err1 != nil {
 		log.Println("user check err1or", err1)
-
 	}
 	fmt.Println(user)
 
