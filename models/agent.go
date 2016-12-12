@@ -106,7 +106,7 @@ func PostAgent(c *gin.Context) {
 		if err == nil {
 			c.JSON(201, agent)
 		} else {
-			checkErr(err, "Insert failed")
+			CheckErr(err, "Insert failed")
 		}
 
 	} else {
@@ -149,7 +149,7 @@ func UpdateAgent(c *gin.Context) {
 			if err == nil {
 				c.JSON(200, agent)
 			} else {
-				checkErr(err, "Updated failed")
+				CheckErr(err, "Updated failed")
 			}
 
 		} else {
@@ -177,7 +177,7 @@ func DeleteAgent(c *gin.Context) {
 		if err == nil {
 			c.JSON(200, gin.H{"id #" + id: "deleted"})
 		} else {
-			checkErr(err, "Delete failed")
+			CheckErr(err, "Delete failed")
 		}
 
 	} else {

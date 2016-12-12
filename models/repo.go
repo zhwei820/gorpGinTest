@@ -38,13 +38,13 @@ func RedisPool(url string, password string, maxConnections int) gin.HandlerFunc 
 func InitDb(dbName string) *gorp.DbMap {
 
 	db, err := sql.Open("mysql", dbName)
-	checkErr(err, "sql.Open failed")
+	CheckErr(err, "sql.Open failed")
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.MySQLDialect{"InnoDB", "UTF8"}}
 	// XXX fix tables names
 	dbmap.AddTableWithName(Agent{}, "agent").SetKeys(true, "Id")
 	dbmap.AddTableWithName(User{}, "user").SetKeys(true, "Id")
 	err = dbmap.CreateTablesIfNotExists()
-	checkErr(err, "Create tables failed")
+	CheckErr(err, "Create tables failed")
 
 	return dbmap
 }
@@ -121,7 +121,7 @@ func ParseQuery(q map[string][]string) string {
 	return query
 }
 
-func checkErr(err error, msg string) {
+func CheckErr(err error, msg string) {
 	if err != nil {
 		log.Fatalln(msg, err)
 	}

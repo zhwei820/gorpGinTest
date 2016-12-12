@@ -3,16 +3,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"gorpGinTest/endpoint"
 	"gorpGinTest/models"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 import "github.com/fatih/structs"
+import "github.com/buger/jsonparser"
 
 func main() {
-	jsonTest()
-	return
+	// jsonTest()
+	// return
 
 	r := gin.Default()
 
@@ -21,11 +23,11 @@ func main() {
 
 	v1 := r.Group("api/v1")
 	{
-		v1.GET("/users", models.GetUsers)
-		v1.GET("/users/:id", models.GetUser)
-		v1.POST("/users", models.PostUser)
-		v1.PUT("/users/:id", models.UpdateUser)
-		v1.DELETE("/users/:id", models.DeleteUser)
+		v1.GET("/users", endpoint.GetUsers)
+		v1.GET("/users/:id", endpoint.GetUser)
+		v1.POST("/users", endpoint.PostUser)
+		v1.PUT("/users/:id", endpoint.UpdateUser)
+		v1.DELETE("/users/:id", endpoint.DeleteUser)
 		// v1.OPTIONS("/users", Options)     // POST
 		// v1.OPTIONS("/users/:id", Options) // PUT, DELETE
 	}
@@ -52,9 +54,9 @@ type User struct {
 
 func jsonTest() {
 	user := User{5, "zhangsan", "pwd", time.Now()}
-	data := structs.Map(user)
-	data["remark"] = "map can be Marshal to json string "
-	datas, _ := json.Marshal(data)
+	data1 := structs.Map(user)
+	data1["remark"] = "map can be Marshal to json string "
+	datas, _ := json.Marshal(data1)
 	fmt.Println(string(datas))
 
 	slcD := []string{"apple", "peach", "pear"}
@@ -64,6 +66,56 @@ func jsonTest() {
 	mapD := map[string]interface{}{"apple": 5, "lettuce": " fdssssssssssfsdfsdf7"}
 	mapB, _ := json.Marshal(mapD)
 	fmt.Println(string(mapB))
+
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("")
+	data := []byte(`{
+			"person": {
+				"name": {
+				"first": "Leonid",
+				"last": "Bugaev",
+				"fullName": "Leonid Bugaev"
+				},
+				"github": {
+				"handle": "buger",
+				"followers": 109
+				},
+				"avatars": [
+				{ "url": "https://avatars1.githubusercontent.com/u/14009?v=3&s=460", "type": "thumbnail" }
+				]
+			},
+			"company": {
+				"name": "Acme"
+			}
+			}`)
+
+	v, _, _, _ := jsonparser.Get(data, "person")
+
+	jsonparser.ArrayEach(v, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
+		ss, _, _, _ := jsonparser.Get(value, "url")
+		fmt.Println(string(ss))
+	}, "avatars")
+
+	jsonparser.GetInt(data, "person", "github", "followers")
+	jsonparser.Get(data, "company")
+
+	if value, _, _, err := jsonparser.Get(data, "company"); err == nil {
+		s, _, _, _ := jsonparser.Get(value, "name")
+		fmt.Println("tttttttttttttt")
+		fmt.Println(string(s))
+	}
+
+	jsonparser.ArrayEach(data, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
+		s, _, _, _ := jsonparser.Get(value, "url")
+		fmt.Println(string(s))
+	}, "person", "avatars")
+
+	jsonparser.ObjectEach(data, func(key []byte, value []byte, dataType jsonparser.ValueType, offset int) error {
+		fmt.Printf("Key: '%s'\n Value: '%s'\n Type: %s\n", string(key), string(value), dataType)
+		return nil
+	}, "person", "name")
 
 	// The JSON package can automatically encode your
 	// custom data types. It will only include exported
