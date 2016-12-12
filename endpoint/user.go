@@ -1,12 +1,13 @@
 package endpoint
 
 import (
+	"encoding/json"
 	"fmt"
+	"gorpGinTest/lib"
 	"gorpGinTest/models"
 	"log"
 	"strconv"
 
-	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
 	"gopkg.in/gorp.v1"
 )
@@ -16,34 +17,24 @@ import (
 // GetUsers return all users filtered by URL query
 func GetUsers(c *gin.Context) {
 	dbmap := c.Keys["DBmap"].(*gorp.DbMap)
-	pool := c.Keys["Pool"].(*redis.Pool)
-	fmt.Println(pool)
-
-	con := pool.Get()
-	defer con.Close()
 
 	key := "user1"
-	user, err1 := redis.String(con.Do("GET", key))
+	user, err1 := lib.GetGache(c, key)
 	if err1 != nil {
-		log.Println("user check err1or", err1)
+		log.Println("user check error", err1)
 	}
 	fmt.Println(user)
 
-	verbose := true
-	query := "SELECT * FROM user"
-
 	q := c.Request.URL.Query()
-	// query = query + ParseQuery(q)
-	if verbose == true {
-		// fmt.Println(q["a"][0])
-		fmt.Println("query: " + query)
-		fmt.Println(q)
-	}
+	fmt.Println(q)
 
+	query := "SELECT * FROM user"
 	var users []models.User
 	_, err := dbmap.Select(&users, query)
 
 	if err == nil {
+		datas, _ := json.Marshal(users)
+
 		c.Header("X-Total-Count", strconv.Itoa(len(users)))
 		c.JSON(200, users)
 	} else {
