@@ -16,6 +16,8 @@ func main() {
 
 	v1 := r.Group("api/v1")
 	{
+
+		v1.GET("/zusers", endpoint.GetZUsers)
 		v1.GET("/users", endpoint.GetUsers)
 		v1.GET("/users/:id", endpoint.GetUser)
 		v1.POST("/users", endpoint.PostUser)

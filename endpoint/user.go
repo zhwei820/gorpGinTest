@@ -15,6 +15,35 @@ import (
 // REST handlers
 
 // GetUsers return all users filtered by URL query
+func GetZUsers(c *gin.Context) {
+	dbmap := c.Keys["DBmap"].(*gorp.DbMap)
+	var users []models.ZUser
+
+	key := "zuser1"
+	user, err1 := lib.GetGache(c, key)
+	if err1 == nil {
+		json.Unmarshal([]byte(user), &users)
+		log.Println("cache hit", key)
+	} else {
+		q := c.Request.URL.Query()
+		fmt.Println(q)
+
+		query := "SELECT * FROM z_user"
+		_, err := dbmap.Select(&users, query)
+
+		if err == nil {
+			datas, _ := json.Marshal(users)
+			lib.SetCache(c, key, string(datas), 600)
+		}
+	}
+
+	c.Header("X-Total-Count", strconv.Itoa(len(users)))
+	c.JSON(200, users)
+
+	// curl -i http://localhost:8084/api/v1/users
+}
+
+// GetUsers return all users filtered by URL query
 func GetUsers(c *gin.Context) {
 	dbmap := c.Keys["DBmap"].(*gorp.DbMap)
 	var users []models.User
@@ -22,12 +51,9 @@ func GetUsers(c *gin.Context) {
 	key := "user1"
 	user, err1 := lib.GetGache(c, key)
 	if err1 == nil {
-		fmt.Println(user)
-
 		json.Unmarshal([]byte(user), &users)
 		log.Println("cache hit", key)
 	} else {
-
 		q := c.Request.URL.Query()
 		fmt.Println(q)
 
