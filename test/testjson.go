@@ -9,8 +9,6 @@ import (
 	"github.com/fatih/structs"
 )
 
-// We'll use these two structs to demonstrate encoding and
-// decoding of custom types below.
 type Response1 struct {
 	Page   int
 	Fruits []string
@@ -92,46 +90,28 @@ func jsonTest() {
 		return nil
 	}, "person", "name")
 
-	// The JSON package can automatically encode your
-	// custom data types. It will only include exported
-	// fields in the encoded output and will by default
-	// use those names as the JSON keys.
 	res1D := &Response1{
 		Page:   1,
 		Fruits: []string{"apple", "peach", "pear"}}
 	res1B, _ := json.Marshal(res1D)
 	fmt.Println(string(res1B))
 
-	// You can use tags on struct field declarations
-	// to customize the encoded JSON key names. Check the
-	// definition of `Response2` above to see an example
-	// of such tags.
 	res2D := &Response2{
 		Page:   1,
 		Fruits: []string{"apple", "peach", "pear"}}
 	res2B, _ := json.Marshal(res2D)
 	fmt.Println(string(res2B))
 
-	// Now let's look at decoding JSON data into Go
-	// values. Here's an example for a generic data
-	// structure.
 	byt := []byte(`{"num":6.13,"strs":["a","b"], "test":{"apple":5,"lettuce":" fdssssssssssfsdfsdf7"}}`)
 	var dat map[string]interface{}
 
-	// Here's the actual decoding, and a check for
-	// associated errors.
 	if err := json.Unmarshal(byt, &dat); err != nil {
 		panic(err)
 	}
 	fmt.Println(dat)
 	fmt.Println(dat["test"])
 
-	// We can also decode JSON into custom data types.
-	// This has the advantages of adding additional
-	// type-safety to our programs and eliminating the
-	// need for type assertions when accessing the decoded
-	// data.
-	str := `{"page": 1, "fruits": ["apple", "peach"]}`
+	str := `{"page": 1, "fruits": ["apple", "peach"], "test":"thhhhhhhhhhhhhhhhhh"}`
 	res := Response2{}
 	json.Unmarshal([]byte(str), &res)
 	fmt.Println(res)

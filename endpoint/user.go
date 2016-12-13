@@ -17,29 +17,31 @@ import (
 // GetUsers return all users filtered by URL query
 func GetUsers(c *gin.Context) {
 	dbmap := c.Keys["DBmap"].(*gorp.DbMap)
+	var users []models.User
 
 	key := "user1"
 	user, err1 := lib.GetGache(c, key)
-	if err1 != nil {
-		log.Println("user check error", err1)
-	}
-	fmt.Println(user)
+	if err1 == nil {
+		fmt.Println(user)
 
-	q := c.Request.URL.Query()
-	fmt.Println(q)
-
-	query := "SELECT * FROM user"
-	var users []models.User
-	_, err := dbmap.Select(&users, query)
-
-	if err == nil {
-		datas, _ := json.Marshal(users)
-
-		c.Header("X-Total-Count", strconv.Itoa(len(users)))
-		c.JSON(200, users)
+		json.Unmarshal([]byte(user), &users)
+		log.Println("cache hit", key)
 	} else {
-		c.JSON(404, gin.H{"error": "no user(s) into the table"})
+
+		q := c.Request.URL.Query()
+		fmt.Println(q)
+
+		query := "SELECT * FROM user"
+		_, err := dbmap.Select(&users, query)
+
+		if err == nil {
+			datas, _ := json.Marshal(users)
+			lib.SetCache(c, key, string(datas), 600)
+		}
 	}
+
+	c.Header("X-Total-Count", strconv.Itoa(len(users)))
+	c.JSON(200, users)
 
 	// curl -i http://localhost:8084/api/v1/users
 }
@@ -73,7 +75,7 @@ func PostUser(c *gin.Context) {
 		fmt.Println(user)
 	}
 
-	if user.Name != "" { // XXX Check mandatory fields
+	if user.Name != "" {
 		err := dbmap.Insert(&user)
 		if err == nil {
 			c.JSON(201, user)
@@ -106,8 +108,6 @@ func UpdateUser(c *gin.Context) {
 
 		userId, _ := strconv.ParseInt(id, 0, 64)
 
-		//TODO : find fields via reflections
-		//XXX custom fields mapping
 		user := models.User{
 			Id:      userId,
 			Pass:    json.Pass,
@@ -118,7 +118,7 @@ func UpdateUser(c *gin.Context) {
 			Created: user.Created, //user read from previous select
 		}
 
-		if user.Name != "" { // XXX Check mandatory fields
+		if user.Name != "" {
 			_, err = dbmap.Update(&user)
 			if err == nil {
 				c.JSON(200, user)

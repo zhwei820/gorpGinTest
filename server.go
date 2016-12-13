@@ -5,16 +5,14 @@ import (
 	"gorpGinTest/models"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	// jsonTest()
-	// return
-
 	r := gin.Default()
 
 	r.Use(models.Database("root:spwx@/todolist"))
-	r.Use(models.RedisPool("redis/localhost:6379/1", "", 10))
+	r.Use(models.RedisPool("redis://:@localhost:6379/1", "", 10))
 
 	v1 := r.Group("api/v1")
 	{
