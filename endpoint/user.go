@@ -40,7 +40,7 @@ func GetZUsers(c *gin.Context) {
 	c.Header("X-Total-Count", strconv.Itoa(len(users)))
 	c.JSON(200, users)
 
-	// curl -i http://localhost:8084/api/v1/users
+	// curl -i http://localhost:8084/api/v1/zusers
 }
 
 // GetUsers return all users filtered by URL query
